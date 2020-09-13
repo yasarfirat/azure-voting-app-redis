@@ -1,0 +1,23 @@
+def label = "frt-jenkins-agent-${UUID.randomUUID().toString()}"
+
+podTemplate(label: label, containers: [
+    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'kubectl', image: 'kubectl', command: 'cat', ttyEnabled: true), 
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+  ]) 
+{
+  node(label) {
+    container('docker') {
+      stage('Docker Build & Push') {
+        docker.withRegistry(('http://'+env.DOCKER_REGISTERY+'/v2'), env.DOCKER_REGISTERY_CREDENTIALS) {
+          def app = docker.build("remax-bff-api", "-f src/Dockerfile .")
+          app.push("B${env.BUILD_NUMBER}")
+        }
+      }
+    }
+    
+    }   
+  }
+}
