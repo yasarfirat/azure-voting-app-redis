@@ -28,7 +28,7 @@ podTemplate(label: label, containers: [
           //sh "kubectl apply -f k8s/Service.yaml"
         }
       }       
-    }   
+    //}   
     
    }   
  }
