@@ -9,6 +9,9 @@ podTemplate(label: label, containers: [
   ]) 
 {
   node(label) {
+    stage('Checkout') {
+      checkout scm
+    } 
     container('docker') {
       stage('Docker Build & Push') {
         docker.withRegistry(('http://'+env.DOCKER_REGISTERY+'/v2'), env.DOCKER_REGISTERY_CREDENTIALS) {
