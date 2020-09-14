@@ -23,12 +23,12 @@ podTemplate(label: label, containers: [
     }     
      container('kubectl') {
       stage('Apply yaml(s) on kubernetes') {
-        //withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL, clusterName: 'kubernetes', namespace: env.NAMESPACE]) {
+        withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL, clusterName: 'kubernetes', namespace: env.NAMESPACE]) {
           sh "envsubst < azure-vote-all-in-one-redis.yaml | kubectl apply -f -"
           //sh "kubectl apply -f k8s/Service.yaml"
         }
       }       
-    //}   
+    }   
     
    }   
  }
