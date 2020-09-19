@@ -16,7 +16,7 @@ podTemplate(label: label, containers: [
       stage('Docker Build & Push') {
         docker.withRegistry(('http://'+env.DOCKER_REGISTERY+'/v2'), env.DOCKER_REGISTERY_CREDENTIALS) {
           sh "cd ./azure-vote"
-          sh "docker build -t azure-vote-jenkins ."
+          sh "docker build -t azure-vote-jenkins Dockerfile ."
           //def app = docker.build("azure-vote-jenkins")
           app.push("B${env.BUILD_NUMBER}")
         }
