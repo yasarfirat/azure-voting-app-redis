@@ -1,0 +1,36 @@
+def label = "frt-jenkins-agent-${UUID.randomUUID().toString()}"
+
+podTemplate(label: label, containers: [
+    containerTemplate(name: 'docker', image: 'docker:latest', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'kubectl', image: 'roffe/kubectl:latest', command: 'cat', ttyEnabled: true), 
+    
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+  ]) 
+{
+  node(label) {
+    stage('Checkout') {
+      checkout scm
+    } 
+    container('docker') {
+      stage('Docker Build & Push') {
+        docker.withRegistry(('http://'+env.DOCKER_REGISTERY+'/v2'), env.DOCKER_REGISTERY_CREDENTIALS) {
+          //sh "cd ./azure-vote"
+          //sh "docker build -t azure-vote-jenkins Dockerfile ."
+          def app = docker.build("azure-vote-jenkins", "-f azure-vote/Dockerfile .")
+          app.push("B${env.BUILD_NUMBER}")
+        }
+      }
+    }     
+     container('kubectl') {
+      stage('Apply yaml(s) on kubernetes') {
+        withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL]) {
+          sh "envsubst < ./azure-vote-all-in-one-redis.yaml | kubectl apply -f -"
+          //sh "kubectl apply -f azure-vote-all-in-one-redis.yaml"
+        }
+      }       
+     }  
+    
+   }   
+ }
