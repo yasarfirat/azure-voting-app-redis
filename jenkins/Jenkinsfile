@@ -3,7 +3,7 @@ def label = "frt-jenkins-agent-${UUID.randomUUID().toString()}"
 podTemplate(label: label, containers: [
     containerTemplate(name: 'docker', image: 'docker:latest', command: 'cat', ttyEnabled: true),
     containerTemplate(name: 'kubectl', image: 'roffe/kubectl:latest', command: 'cat', ttyEnabled: true),
-     containerTemplate(name: 'helm', image: 'alpine/helm:latest', command: 'cat', ttyEnabled: true), 
+     //containerTemplate(name: 'helm', image: 'alpine/helm:latest', command: 'cat', ttyEnabled: true), 
     
   ],
   volumes: [
@@ -19,7 +19,7 @@ podTemplate(label: label, containers: [
         docker.withRegistry(('http://'+env.DOCKER_REGISTERY+'/v2'), env.DOCKER_REGISTERY_CREDENTIALS) {
           //sh "cd ./azure-vote"
           //sh "docker build -t azure-vote-jenkins Dockerfile ."
-          def app = docker.build("azure-vote-jenkins", "-f azure-vote/Dockerfile .")
+          def app = docker.build("azure-vote-jenkins", "-f ./azure-vote/Dockerfile")
           app.push("B${env.BUILD_NUMBER}")
         }
       }
@@ -32,11 +32,7 @@ podTemplate(label: label, containers: [
         }
       }       
      }
-     stage('Run helm') {
-     container('helm') {
-       sh "helm list"
-      }
-    }
+     
     
    }   
  }
