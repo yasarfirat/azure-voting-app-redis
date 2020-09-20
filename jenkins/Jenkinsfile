@@ -33,8 +33,8 @@ podTemplate(label: label, containers: [
       }
          container('helm') {
          stage('Helm deploy mongo') {
-             withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL]) {
-             sh "helm ls "
+             withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL, namespace: env.NAMESPACE]) {
+                 sh "helm install ratings bitnami/mongodb --set auth.username="{env.mongo_admin}",auth.password="{env.mongo_password}",auth.database="{env.mongo_db}""
              }
          }
        }
