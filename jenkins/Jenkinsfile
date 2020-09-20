@@ -2,7 +2,8 @@ def label = "frt-jenkins-agent-${UUID.randomUUID().toString()}"
 
 podTemplate(label: label, containers: [
     containerTemplate(name: 'docker', image: 'docker:latest', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'kubectl', image: 'roffe/kubectl:latest', command: 'cat', ttyEnabled: true), 
+    containerTemplate(name: 'kubectl', image: 'roffe/kubectl:latest', command: 'cat', ttyEnabled: true),
+     containerTemplate(name: 'helm', image: 'alpine/helm:latest', command: 'cat', ttyEnabled: true), 
     
   ],
   volumes: [
@@ -30,7 +31,12 @@ podTemplate(label: label, containers: [
           //sh "kubectl apply -f azure-vote-all-in-one-redis.yaml"
         }
       }       
-     }  
+     }
+     stage('Run helm') {
+     container('helm') {
+       sh "helm list"
+      }
+    }
     
    }   
  }
