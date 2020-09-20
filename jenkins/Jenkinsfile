@@ -36,7 +36,7 @@ podTemplate(label: label, containers: [
              withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL, namespace: env.NAMESPACE]) {
                  sh "helm repo add bitnami https://charts.bitnami.com/bitnami"
                  sh "helm repo update"
-                 sh "helm install ratings bitnami/mongodb --set auth.username="${mongo_admin}",auth.password=${mongo_password}",auth.database="${mongo_db}""
+                 sh "helm install ratings bitnami/mongodb --set auth.username="${mongo_admin}",auth.password="${mongo_password}",auth.database="${mongo_db}""
              }
          }
        }
