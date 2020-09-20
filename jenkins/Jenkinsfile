@@ -33,7 +33,7 @@ podTemplate(label: label, containers: [
       }
          stage('Helm deploy mongo') {
              sh "helm ls"
-         {
+         }
      }
      
     
