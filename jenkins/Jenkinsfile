@@ -40,8 +40,8 @@ podTemplate(label: label, containers: [
              }
          }
              stage('Helm deploy mongo') {
-               withCredentials(bindings: [usernamePassword(credentialsId: 'mongo-credentials', passwordVariable: 'PCF_PASS', usernameVariable: 'PCF_USER')]) {
-                   sh "helm install ratings bitnami/mongodb --namespace ratingsapp --set auth.username=$PCF_USER,auth.password=$PCF_PASS,auth.database=ratingsdb"
+               withCredentials(bindings: [usernamePassword(credentialsId: 'mongo-credentials', passwordVariable: 'PCF_PASS', usernameVariable: 'PCF_USER'), namespace: env.NAMESPACE]) {
+                   sh "helm install ratings bitnami/mongodb --set auth.username=$PCF_USER,auth.password=$PCF_PASS,auth.database=ratingsdb"
                }
              }
        }
