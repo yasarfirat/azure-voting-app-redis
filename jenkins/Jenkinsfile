@@ -1,5 +1,4 @@
 def label = "frt-jenkins-agent-${UUID.randomUUID().toString()}"
-def namespace = "ratingsapp"
 
 podTemplate(label: label, containers: [
     containerTemplate(name: 'docker', image: 'docker:latest', command: 'cat', ttyEnabled: true),
@@ -37,7 +36,7 @@ podTemplate(label: label, containers: [
              withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL, namespace: env.NAMESPACE , usernamePassword(credentialsId: 'mongo-credentials', passwordVariable: 'PCF_PASS', usernameVariable: 'PCF_USER')]) {
                  sh "helm repo add bitnami https://charts.bitnami.com/bitnami"
                  sh "helm repo update"
-                 
+                 sh "helm install ratings bitnami/mongodb --set auth.username=$PCF_USER,auth.password=$PCF_PASS,auth.database=ratingsdb"
              }
          }
              
