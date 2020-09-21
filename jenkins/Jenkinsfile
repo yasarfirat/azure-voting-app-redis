@@ -32,13 +32,18 @@ podTemplate(label: label, containers: [
         }
       }
          container('helm') {
-         stage('Helm deploy mongo') {
+         stage('Helm repo add') {
              withKubeConfig([credentialsId: env.KUBERNETES_CREDENTIALS, serverUrl: env.KUBERNETES_API_URL, namespace: env.NAMESPACE]) {
                  sh "helm repo add bitnami https://charts.bitnami.com/bitnami"
                  sh "helm repo update"
-                 sh "helm install ratings bitnami/mongodb"
+                 
              }
          }
+             stage('Helm deploy mongo') {
+               withCredentials(bindings: [usernamePassword(credentialsId: 'mongo-credentials', passwordVariable: 'PCF_PASS', usernameVariable: 'PCF_USER')]) {
+                   sh "helm install ratings bitnami/mongodb --namespace ratingsapp --set auth.username=$PCF_USER,auth.password=$PCF_PASS,auth.database=ratingsdb"
+               }
+             }
        }
      }    
    }   
