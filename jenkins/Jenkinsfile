@@ -1,4 +1,5 @@
 def label = "frt-jenkins-agent-${UUID.randomUUID().toString()}"
+def namespace = "ratingsapp"
 
 podTemplate(label: label, containers: [
     containerTemplate(name: 'docker', image: 'docker:latest', command: 'cat', ttyEnabled: true),
@@ -40,8 +41,8 @@ podTemplate(label: label, containers: [
              }
          }
              stage('Helm deploy mongo') {
-               withCredentials(bindings: [usernamePassword(credentialsId: 'mongo-credentials', passwordVariable: 'PCF_PASS', usernameVariable: 'PCF_USER'), namespace: env.NAMESPACE]) {
-                   sh "helm install ratings bitnami/mongodb --set auth.username=$PCF_USER,auth.password=$PCF_PASS,auth.database=ratingsdb"
+               withCredentials(bindings: [usernamePassword(credentialsId: 'mongo-credentials', passwordVariable: 'PCF_PASS', usernameVariable: 'PCF_USER')]) {
+                   sh "helm install ratings bitnami/mongodb --namespace namespace --set auth.username=$PCF_USER,auth.password=$PCF_PASS,auth.database=ratingsdb"
                }
              }
        }
